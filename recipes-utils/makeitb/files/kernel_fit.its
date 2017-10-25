@@ -1,0 +1,70 @@
+/*
+ * U-boot kernel_fit source file with  kernel, ramdisk and FDT blob
+ */
+
+/dts-v1/;
+
+/ {
+	description = "kernel, ramdisk and FDT blob";
+	#address-cells = <1>;
+
+	images {
+		kernel@1 {
+			description = "Linux-3.8.4-rt2+";
+			data = /incbin/("./zImage");
+			type = "kernel";
+			arch = "arm";
+			os = "linux";
+			compression = "none";
+			load = <0x90008000>;
+			entry = <0x90008000>;
+			hash@1{
+				algo = "crc32";
+			};
+			hash@2{
+				algo = "sha1";
+			};
+		};
+		ramdisk@1 {
+			description = "rootfs.ext2.gz";
+			data = /incbin/("./rootfs.ext2.gz");
+			type = "ramdisk";
+			arch = "arm";
+			os = "linux";
+			compression = "none";
+			load = <0xb1c00000>;
+			hash@1{
+				algo = "crc32";
+			};
+			hash@2{
+				algo = "sha1";
+			};
+		};
+		fdt@1 {
+			description = "d4400-evb-fdt";
+			data = /incbin/("./d4400-evb.dtb");
+			type = "flat_dt";
+			arch = "arm";
+			compression = "none";
+			load = <0xa0ee0000>;
+			hash@1{
+				algo = "crc32";
+			};
+			hash@2{
+				algo = "sha1";
+			};
+		};
+	};
+
+    configurations {
+        default = "config@1";
+
+        config@1 {
+            description = "D4400-EVB linux-3.8.4-rt2+ configuration";
+            kernel = "kernel@1";
+            ramdisk = "ramdisk@1";
+            fdt = "fdt@1";
+        };
+    };
+
+};
